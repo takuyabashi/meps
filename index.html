@@ -1,0 +1,42 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a67c7">
+<title>MEPS</title>
+<style>body{font-family:-apple-system,sans-serif;max-width:700px;margin:auto;padding:16px;background:#eef3f8}.card{background:#fff;padding:16px;border-radius:12px;margin:12px 0}label{display:block;padding:8px 0}.result{position:sticky;bottom:0;background:#0a67c7;color:#fff;padding:16px;border-radius:12px}input[type=number]{width:80px;font-size:18px}</style>
+</head><body><h1>MEPS</h1>
+<div class=card><h3>疼痛</h3>
+<label><input type=radio name=p value=45 checked>痛みなし</label>
+<label><input type=radio name=p value=30>軽度</label>
+<label><input type=radio name=p value=15>中等度</label>
+<label><input type=radio name=p value=0>高度</label></div>
+<div class=card><h3>可動域</h3>
+屈曲<input id=f type=number value=140>°
+伸展制限<input id=e type=number value=0>°
+<div id=m></div></div>
+<div class=card><h3>安定性</h3>
+<label><input type=radio name=s value=10 checked>安定</label>
+<label><input type=radio name=s value=5>中等度不安定</label>
+<label><input type=radio name=s value=0>著明な不安定</label></div>
+<div class=card><h3>機能</h3>
+<label><input class=c type=checkbox>髪をとかす</label>
+<label><input class=c type=checkbox>食事</label>
+<label><input class=c type=checkbox>身体を洗う</label>
+<label><input class=c type=checkbox>シャツを着る</label>
+<label><input class=c type=checkbox>靴を履く</label></div>
+<div class=result><div>合計 <span id=t></span>/100</div><div id=g></div></div>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
+function calc(){
+let pain=+document.querySelector('[name=p]:checked').value;
+let st=+document.querySelector('[name=s]:checked').value;
+let arc=Math.max(0,(+f.value||0)-(+e.value||0));
+let mo=arc>=100?20:(arc>=50?15:5);
+m.textContent='Arc '+arc+'° / Motion '+mo+'点';
+let fu=document.querySelectorAll('.c:checked').length*5;
+let tot=pain+st+mo+fu;t.textContent=tot;
+g.textContent=tot>=90?'Excellent':tot>=75?'Good':tot>=60?'Fair':'Poor';
+}
+document.querySelectorAll('input').forEach(i=>['input','change','click'].forEach(ev=>i.addEventListener(ev,calc)));
+calc();
+</script></body></html>
